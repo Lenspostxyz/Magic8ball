@@ -17,6 +17,7 @@ const responses = [
   "Not in a million years.",
   "Signs point to yes.",
   "Better not tell you now."
+  "Magic 8-Ball is feeling shy today.",
 ];
 
 app.get("/frame", (req, res) => {
