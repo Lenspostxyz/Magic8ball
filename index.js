@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, "public"))); // Serves static files correctly
+app.use(express.static(path.join(__dirname, "public"))); // Serve frontend files
 
 // Magic 8-Ball possible answers
 const responses = [
