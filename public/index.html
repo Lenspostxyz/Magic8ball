@@ -5,7 +5,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 app.use(cors());
-app.use(express.static(path.join(__dirname, "public")));
+app.use(express.static(path.join(__dirname, "public"))); // Ensure public folder is served
 
 // Magic 8-Ball possible answers
 const responses = [
@@ -21,9 +21,9 @@ const responses = [
   "Better not tell you now."
 ];
 
-// API route for Farcaster Frame
 app.get("/frame", (req, res) => {
   const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+  
   res.json({
     image: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Magic_eight_ball.png",
     buttons: [
@@ -37,12 +37,10 @@ app.get("/frame", (req, res) => {
   });
 });
 
-// Serve frontend page for /answer
 app.get("/answer", (req, res) => {
   res.sendFile(path.join(__dirname, "public", "index.html"));
 });
 
-// API to return random answer
 app.get("/api/answer", (req, res) => {
   const randomResponse = responses[Math.floor(Math.random() * responses.length)];
   res.json({ response: randomResponse });
