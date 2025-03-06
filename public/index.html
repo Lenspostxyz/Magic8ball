@@ -1,40 +1,53 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Magic 8-Ball</title>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            text-align: center;
-            margin: 50px;
-        }
-        .ball-img {
-            width: 200px;
-            cursor: pointer;
-        }
-        .response {
-            font-size: 20px;
-            margin-top: 20px;
-            font-weight: bold;
-        }
-    </style>
-</head>
-<body>
-    <h1>🎱 Ask the Magic 8-Ball</h1>
-    <p>Click the ball to reveal your fate!</p>
-    <img class="ball-img" src="https://upload.wikimedia.org/wikipedia/commons/e/e3/Magic_eight_ball.png" onclick="getAnswer()" alt="Magic 8-Ball">
-    <p class="response" id="response-text">...</p>
+const express = require("express");
+const cors = require("cors");
+const path = require("path");
+const app = express();
+const PORT = process.env.PORT || 3000;
 
-    <script>
-        function getAnswer() {
-            fetch("/api/answer")
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById("response-text").innerText = "🎱 " + data.response;
-                });
-        }
-    </script>
-</body>
-</html>
+app.use(cors());
+app.use(express.static(path.join(__dirname, "public"))); // Ensures "public/" folder is served
+
+// Magic 8-Ball possible answers
+const responses = [
+  "Yes, absolutely!",
+  "No way, try again!",
+  "The stars are unsure, ask later.",
+  "Most likely, yes!",
+  "Don't count on it.",
+  "Ask again later.",
+  "Definitely!",
+  "Not in a million years.",
+  "Signs point to yes.",
+  "Better not tell you now."
+];
+
+// API route for Farcaster Frame
+app.get("/frame", (req, res) => {
+  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+  res.json({
+    image: "https://upload.wikimedia.org/wikipedia/commons/e/e3/Magic_eight_ball.png",
+    buttons: [
+      {
+        label: "Ask the Magic 8-Ball",
+        action: "post_redirect",
+        target: "/answer"
+      }
+    ],
+    text: `🎱 The Magic 8-Ball says: "${randomResponse}"`
+  });
+});
+
+// Serve frontend page for /answer
+app.get("/answer", (req, res) => {
+  res.sendFile(path.join(__dirname, "public", "index.html"));
+});
+
+// API to return random answer
+app.get("/api/answer", (req, res) => {
+  const randomResponse = responses[Math.floor(Math.random() * responses.length)];
+  res.json({ response: randomResponse });
+});
+
+app.listen(PORT, () => {
+  console.log(`Magic 8-Ball Frame running on port ${PORT}`);
+});
